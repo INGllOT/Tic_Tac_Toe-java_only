@@ -1,17 +1,13 @@
 import java.util.Scanner;
 
 public class Main {
+    static boolean isY = true;
     public static void main(String[] args) {
 
         String empytField = "_________";
         String[] arrStr = empytField.split("");
 
-        for(;;) {
-            setFieldAndPrint(arrStr);
-            if (check(arrStr)){
-                break;
-            }
-        }
+        setFieldAndPrint(arrStr);
 
     }
     public static boolean check(String[] input) {
@@ -44,14 +40,15 @@ public class Main {
             System.out.println("X wins");
             gameIsOver = true;
 
-        }else if (checkIfImpossible(input) || (X == O && X != 0 && O != 0)) {
-            System.out.println("Impossible");
+//        }else if (checkIfImpossible(input) || (X == O && X != 0 && O != 0)) {
+//            System.out.println("Impossible");
 
         } else if (gameIsNotFinished) {
             System.out.println("Game not finished");
 
         }  else if (O == X) {
             System.out.println("Draw");
+            gameIsOver = true;
         }
 
         return gameIsOver;
@@ -62,11 +59,12 @@ public class Main {
         int i = 0;
         int j = 0;
 
+
         for(;;) {
             boolean check = true;
+            String[] coordinates = scanner.nextLine().split(" ");
 
             try {
-                String[] coordinates = scanner.nextLine().split(" ");
                 i = Integer.parseInt(coordinates[0]);
                 j = Integer.parseInt(coordinates[1]);
             } catch (Exception e) {
@@ -89,8 +87,17 @@ public class Main {
             }
 
             if(check) {
-                arr[i - 1][j] = "X";
-                break;
+                if(isY){
+                    arr[i - 1][j] = "X";
+                    isY = false;
+                    break;
+
+                } else {
+                    arr[i - 1][j] = "O";
+                    isY = true;
+                    break;
+                }
+
             }
         }
         return arr;
@@ -117,29 +124,44 @@ public class Main {
             System.out.println();
         }
 
-        // printing
-        System.out.println("---------");
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 5; j++) {
-                System.out.print(field[i][j] + " ");
+        for (;;) {
+
+            // printing
+            System.out.println("---------");
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 5; j++) {
+                    System.out.print(field[i][j] + " ");
+                }
+                System.out.println();
             }
-            System.out.println();
-        }
-        System.out.println("---------");
+            System.out.println("---------");
 
-        //  player is X, and we give him a chance to move
-        field = playerMove(field);
+            //  players move
+            field = playerMove(field);
 
-        // printing
-        System.out.println("---------");
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 5; j++) {
-                System.out.print(field[i][j] + " ");
+            // printing after player move
+            System.out.println("---------");
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 5; j++) {
+                    System.out.print(field[i][j] + " ");
+                }
+                System.out.println();
             }
-            System.out.println();
-        }
-        System.out.println("---------");
+            System.out.println("---------");
 
+            String[] stringAfterMove = new String[9];
+            int position = 0;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 1; j < 4; j++) {
+                    stringAfterMove[position] = field[i][j];
+                    position ++;
+                }
+            }
+
+            if (check(stringAfterMove)){
+                break;
+            }
+        }
     }
     public static boolean checkIfImpossible(String[] arr) {
         int a = 0;
@@ -147,7 +169,6 @@ public class Main {
         int O = 1;
         boolean isX = true;
         boolean contains_ = false;
-        
         for (String e : arr) {
 
             if(e.equals("_")){
